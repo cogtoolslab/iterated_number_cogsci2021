@@ -1,28 +1,46 @@
-# Project Template
 
-This is an example of how a cogtoolslab project repo should be organized.
+Where do written numerals come from? Why do they emerge in societies, and take the diverse forms that they do? This repo contains an experiment beginning to answer that question. It involves a simple communication game to see what constraints lead people to use different kinds of graphical representations of number.
 
-It contains several subdirectories that will contain standard elements of almost every project:
 
-- `analysis` (aka `notebooks`): This directory will typically contain jupyter/Rmd notebooks for exploratory code development and data analysis.
-- `experiments`: If this is a project that will involve collecting human behavioral data, this is where you want to put your experimental code. If this is a project that will involve evaluation of a computational model's behavior on a task, this is also where you want to put the task code.
-- `model`: If this is a cognitive modeling project, this is where you want to put your model definitions. If this project involves training neural networks, you might consider starting out putting training scripts in here, but then splitting these off into a separate `training` dir. 
-- `results`: This directory is meant to contain "intermediate" results of your computational/behavioral experiments. It should minimally contain two subdirectories: `csv` and `plots`. So `/results/csv/` is the path to use when saving out `csv` files containing tidy dataframes. And `/results/plots/` is the path to use when saving out `.pdf`/`.png` plots, a small number of which may be then polished and formatted for figures in a publication. *Important: Before pushing any csv files containing human behavioral data to a public code repository, triple check that this data is properly anonymized. This means no bare AMT Worker ID's.*
-- `stimuli`: This directory is meant to contain any download/preprocessing scripts for data that are _inputs_ to this project. For many projects, these will be images. This is also where you want to place any scripts that will upload your data to our `stimuli`  MongoDB database and any image data to Amazon S3 (so that it has a semi-permanent URL you can use to insert into your web experiment.)
-- `utils`: This directory is meant to contain any files containing helper functions. 
+Below is a guide to the various directories in this repo.
 
-### For general handy computing tips, please see the [`handy_tips` repo](https://github.com/cogtoolslab/handy_tips).
+## analysis
+**iternum_analysis.ipynb** ? notebook for processing the draw_number task data. Generates dataframe for **stats_iternum.Rmd**
+**iternum_recog_analysis.ipynb** ? notebook for processing the classify_iternum task data. Generates dataframe for **recog_stats.Rmd**.
+**iternum_feature_analysis.ipynb** ? notebook for processing the VGG-19 predictions. Generates dataframe for **clf_stats.Rmd**.
 
-### Note about other project documentation 
+**stats_iternum.Rmd** ? R markdown for original production task performance.
+**recog_stats.Rmd** ? R markdown for recognition task performance.
+**clf_stats.Rmd** ? R markdown for VGG-19 performance.
 
-#### Starter Google Doc
 
-When we spin up a new project, the first thing we'll often do to collect our thoughts is create a Google Doc. This is b/c this file format is easy to share and flexible in format. This google doc is also where you should take notes during our meetings, and collect high-level TODO items, especially those that are not immediately actionable in code. .For code development TODO's, we will often instead use GitHub Issues.
 
-#### Open Science Framework for pre-registration of behavioral experiments
+## experiments
+**app.js** ? active for draw_number
+**app1.js** ? active for classify_iternum
+**store.js** ? must be running to store data during experiment
 
-Once we are in the later stages of desigining a new human behavioral experiment and preparing to run our first pilot, we will write up a pre-registration and post it to the [Open Science Framework](https://osf.io/). We subscribe to the philosophy that "pre-registrations are a plan, not a prison." They help us transparently document our thinking and decision-making process both for ourselves and for others, and will help us distinguish between confirmatory and exploratory findings. We do not believe that there is a single best way to write a pre-registration, but in many cases a more detailed plan will help us to clarify our experimental logic and set up our analyses accordingly (i.e., what each hypothesis predicts, which measures and analyses we will use to evaluate each relevant hypothesis). 
+#### draw_number
+Experimental code for original, production task, consisting of 4 shapes by 8 cardinalities.
+Data collected in early 2020.
 
-#### Manuscripts (including conference papers/abstracts) 
+#### classify_iternum
+Experimental code for the recognition study, wherein people classified sketches from the original study either by shape or cardinality.
+Data collected from the end of 2020 through early April 2021.
 
-When we are preparing to write up a manuscript (or a conference paper), we will create a new repo, usually following the convention: `projectname_latex`. This is where you will want to place your LaTeX source `.tex` files for your paper and your publication-ready figures as high-resolution `.pdf` files in the `figures` directory. We typically format and fine-tune our figures using Adobe Illustrator.
+
+
+## experiments
+#### draw_number
+Materials for creating the stimuli of the production task. **animal_silhouettes** contains silhouettes of animals found with Creative Commons licenses. **stim_generator.ipynb** creates stimuli out of the images found in that directory, while **upload_stims_to_s3.ipynb** stores them on Amazon storage services.
+
+#### classify_iternum
+Materials for creating stimuli of the recognition task. **catch_trial_stimuli** includes several hand-drawn catch-trial stimuli made to resemble the classification buttons as closely as possible. **generate_metadata.ipynb** accesses stored sketches from the production task and assembles them into groups with one sketch from every participant. Those groups constitute 61 different paradigms, shown at random to participants in the recognition task. **generate_metadata.ipynb** then stores these groups of stimuli on Amazon storage services.
+
+
+
+## utils
+Contains important code for analysis notebooks. **extract_features.py** runs the VGG-19 analysis on original production sketches, which must be rendered already from **iternum_analysis.ipynb**; **embeddings.py** is called in that process. **utils.py** is used by **analysis/iternum_analysis.ipynb**.
+
+
+
